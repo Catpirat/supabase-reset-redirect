@@ -8,17 +8,21 @@
       const params = new URLSearchParams(window.location.search);
       const token = params.get("token");
       const type = params.get("type");
+      const redirectTo = params.get("redirect_to") || "caparazonemocional://reset-password";
 
       if (type === "recovery" && token) {
-        // Redirigir al esquema de la app con el token
-        window.location.href = "caparazonemocional://reset-password#access_token=" + token;
+        // Armar la URL para la app
+        const deepLink = redirectTo + "#access_token=" + token;
+        console.log("Redirigiendo a:", deepLink);
+        window.location.href = deepLink;
       } else {
-        document.body.innerHTML = "<h2>Error: token inválido</h2>";
+        document.body.innerHTML = "<h2>Error: token inválido o falta parámetro</h2>";
       }
     };
   </script>
 </head>
 <body>
   <h2>Procesando redirección...</h2>
+  <p>Si no pasa nada, abre la app manualmente.</p>
 </body>
 </html>
