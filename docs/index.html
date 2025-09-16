@@ -10,7 +10,7 @@
       const type = params.get("type");
 
       if (type === "recovery" && token) {
-        // Redirigir al esquema de tu app con el token
+        // Redirigir al esquema de la app con el token
         window.location.href = "caparazonemocional://reset-password#access_token=" + token;
       } else {
         document.body.innerHTML = "<h2>Error: token inválido</h2>";
