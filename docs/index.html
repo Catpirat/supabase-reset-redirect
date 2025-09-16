@@ -1,25 +1,24 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8" />
-    <title>Redirigiendo...</title>
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <script>
-      (function () {
-        const frag = window.location.hash ? window.location.hash.substring(1) : "";
-        if (!frag) {
-          document.body.innerHTML = "<p>No se recibió token. Comprueba el enlace del correo.</p>";
-          return;
-        }
-        const appUrl = "caparazonemocional://reset-password#" + frag;
-        window.location.replace(appUrl);
-        setTimeout(function () {
-          document.body.innerHTML = "<p>Si tu app no abrió automáticamente, copia y pega este enlace en tu dispositivo:<br/><a href='" + appUrl + "'>" + appUrl + "</a></p>";
-        }, 1000);
-      })();
-    </script>
-  </head>
-  <body style="font-family:sans-serif; padding:20px;">
-    <p>Redirigiendo a la aplicación...</p>
-  </body>
+<head>
+  <meta charset="utf-8">
+  <title>Procesando reset password...</title>
+  <script>
+    window.onload = () => {
+      const params = new URLSearchParams(window.location.search);
+      const token = params.get("token");
+      const type = params.get("type");
+
+      if (type === "recovery" && token) {
+        // Redirigir al esquema de tu app con el token
+        window.location.href = "caparazonemocional://reset-password#access_token=" + token;
+      } else {
+        document.body.innerHTML = "<h2>Error: token inválido</h2>";
+      }
+    };
+  </script>
+</head>
+<body>
+  <h2>Procesando redirección...</h2>
+</body>
 </html>
