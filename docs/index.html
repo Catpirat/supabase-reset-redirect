@@ -6,13 +6,9 @@
     <script>
       window.onload = () => {
         try {
-          const raw = decodeURIComponent(window.location.hash.substring(1));
-          document.body.innerHTML = "<p>Procesando redirección...</p><p>Debug raw: " + raw + "</p>";
-
-          const innerUrl = new URL(raw);
-          const token = innerUrl.searchParams.get("token");
-          const type = innerUrl.searchParams.get("type");
-
+          const url = new URL(window.location.href);
+          const token = url.searchParams.get("token");
+          const type = url.searchParams.get("type");
           const redirectTo = "caparazonemocional://reset-password";
 
           if (type === "recovery" && token) {
@@ -21,7 +17,7 @@
                                       <p><a href="${deepLink}">${deepLink}</a></p>`;
             window.location.href = deepLink;
           } else {
-            document.body.innerHTML += `<h2>Error: token inválido o falta parámetro</h2>`;
+            document.body.innerHTML = "<h2>Error: token inválido o falta parámetro</h2>";
           }
         } catch (err) {
           document.body.innerHTML = "<h2>Error procesando la redirección</h2><p>" + err + "</p>";
