@@ -6,13 +6,10 @@
     <script>
       window.onload = () => {
         try {
-          // 1. Lo que viene después de "#"
           const raw = decodeURIComponent(window.location.hash.substring(1));
+          document.body.innerHTML = "<p>Procesando redirección...</p><p>Debug raw: " + raw + "</p>";
 
-          // 2. Parseamos la URL de Supabase que viene ahí
           const innerUrl = new URL(raw);
-
-          // 3. Sacamos parámetros reales
           const token = innerUrl.searchParams.get("token");
           const type = innerUrl.searchParams.get("type");
 
@@ -20,11 +17,11 @@
 
           if (type === "recovery" && token) {
             const deepLink = `${redirectTo}#access_token=${token}`;
-            console.log("Redirigiendo a:", deepLink);
+            document.body.innerHTML = `<p>Redirigiendo...</p>
+                                      <p><a href="${deepLink}">${deepLink}</a></p>`;
             window.location.href = deepLink;
           } else {
-            document.body.innerHTML = `<h2>Error: token inválido o falta parámetro</h2>
-                                      <p>Debug → raw: ${raw}</p>`;
+            document.body.innerHTML += `<h2>Error: token inválido o falta parámetro</h2>`;
           }
         } catch (err) {
           document.body.innerHTML = "<h2>Error procesando la redirección</h2><p>" + err + "</p>";
