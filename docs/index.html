@@ -6,25 +6,61 @@
     <script>
       window.onload = () => {
         try {
-          const url = new URL(window.location.href);
-          const token = url.searchParams.get("token");
-          const type = url.searchParams.get("type");
-          const redirectTo = "caparazonemocional://reset-password";
+          // Los parámetros están en el HASH (#), no en searchParams (?)
+          const hashParams = new URLSearchParams(window.location.hash.substring(1));
+          
+          const accessToken = hashParams.get("access_token");
+          const refreshToken = hashParams.get("refresh_token");
+          const type = hashParams.get("type");
+          const expiresIn = hashParams.get("expires_in");
+          
+          console.log("Parámetros extraídos:", {
+            accessToken: accessToken ? "✓" : "✗",
+            refreshToken: refreshToken ? "✓" : "✗", 
+            type,
+            expiresIn
+          });
 
-          if (type === "recovery" && token) {
-            const deepLink = `${redirectTo}#access_token=${token}`;
-            document.body.innerHTML = `<p>Redirigiendo...</p>
-                                      <p><a href="${deepLink}">${deepLink}</a></p>`;
-            window.location.href = deepLink;
+          if (type === "recovery" && accessToken) {
+            // Construir el deep link con TODOS los parámetros necesarios
+            const deepLink = `caparazonemocional://reset-password#access_token=${accessToken}&refresh_token=${refreshToken}&type=${type}&expires_in=${expiresIn}`;
+            
+            document.body.innerHTML = `
+              <h2>Redirigiendo a la app...</h2>
+              <p>Si no se abre automáticamente, haz clic en:</p>
+              <p><a href="${deepLink}">Abrir CaparazónEmocional</a></p>
+              <br>
+              <details>
+                <summary>Debug info</summary>
+                <p>Access Token: ${accessToken ? "✓ Presente" : "✗ Faltante"}</p>
+                <p>Refresh Token: ${refreshToken ? "✓ Presente" : "✗ Faltante"}</p>
+                <p>Type: ${type}</p>
+                <p>Expires In: ${expiresIn}</p>
+              </details>
+            `;
+            
+            // Intentar redirección automática
+            setTimeout(() => {
+              window.location.href = deepLink;
+            }, 1000);
+            
           } else {
-            document.body.innerHTML = "<h2>Error: token inválido o falta parámetro</h2>";
+            document.body.innerHTML = `
+              <h2>Error: parámetros inválidos</h2>
+              <p>Type: ${type || "faltante"}</p>
+              <p>Access Token: ${accessToken ? "presente" : "faltante"}</p>
+              <p>URL completa: ${window.location.href}</p>
+            `;
           }
         } catch (err) {
-          document.body.innerHTML = "<h2>Error procesando la redirección</h2><p>" + err + "</p>";
+          document.body.innerHTML = `
+            <h2>Error procesando la redirección</h2>
+            <p>${err}</p>
+            <p>URL: ${window.location.href}</p>
+          `;
         }
       };
     </script>
-
   </head>
   <body>
     <h2>Procesando redirección...</h2>
