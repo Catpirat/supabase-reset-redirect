@@ -5,23 +5,29 @@
     <title>Procesando reset password...</title>
     <script>
       window.onload = () => {
-        // Obtener parámetros de query (?...) y hash (#...)
-        const queryParams = new URLSearchParams(window.location.search);
-        const hashParams = new URLSearchParams(window.location.hash.substring(1));
+        try {
+          // 1. Lo que viene después de "#"
+          const raw = decodeURIComponent(window.location.hash.substring(1));
 
-        // Revisar ambos lugares
-        const accessToken = queryParams.get("access_token") || hashParams.get("access_token") || queryParams.get("token") || hashParams.get("token");
-        const type = queryParams.get("type") || hashParams.get("type");
-        const redirectTo = "caparazonemocional://reset-password";
+          // 2. Parseamos la URL de Supabase que viene ahí
+          const innerUrl = new URL(raw);
 
-        if (type === "recovery" && accessToken) {
-          const deepLink = redirectTo + "#access_token=" + accessToken;
-          console.log("Redirigiendo a:", deepLink);
-          window.location.href = deepLink;
-        } else {
-          document.body.innerHTML = "<h2>Error: token inválido o falta parámetro</h2><p>Params recibidos:<br>" 
-            + "Query: " + window.location.search + "<br>"
-            + "Hash: " + window.location.hash + "</p>";
+          // 3. Sacamos parámetros reales
+          const token = innerUrl.searchParams.get("token");
+          const type = innerUrl.searchParams.get("type");
+
+          const redirectTo = "caparazonemocional://reset-password";
+
+          if (type === "recovery" && token) {
+            const deepLink = `${redirectTo}#access_token=${token}`;
+            console.log("Redirigiendo a:", deepLink);
+            window.location.href = deepLink;
+          } else {
+            document.body.innerHTML = `<h2>Error: token inválido o falta parámetro</h2>
+                                      <p>Debug → raw: ${raw}</p>`;
+          }
+        } catch (err) {
+          document.body.innerHTML = "<h2>Error procesando la redirección</h2><p>" + err + "</p>";
         }
       };
     </script>
