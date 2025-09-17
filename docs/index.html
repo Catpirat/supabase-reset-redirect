@@ -5,21 +5,22 @@
     <title>Procesando reset password...</title>
     <script>
       window.onload = () => {
-        const params = new URLSearchParams(window.location.search);
-        const accessToken = params.get("access_token"); // 👈 aquí está la diferencia
-        const type = params.get("type");
-        const redirectTo = params.get("redirect_to") || "caparazonemocional://reset-password";
+        // Extraemos todo lo que venga después del "#"
+        const hashParams = new URLSearchParams(window.location.hash.substring(1));
+        const accessToken = hashParams.get("access_token");
+        const type = hashParams.get("type");
+        const redirectTo = "caparazonemocional://reset-password";
 
         if (type === "recovery" && accessToken) {
-          // Construir el deep link hacia tu app
           const deepLink = redirectTo + "#access_token=" + accessToken;
           console.log("Redirigiendo a:", deepLink);
           window.location.href = deepLink;
         } else {
           document.body.innerHTML = "<h2>Error: token inválido o falta parámetro</h2>";
         }
-    };
+      };
     </script>
+
   </head>
   <body>
     <h2>Procesando redirección...</h2>
