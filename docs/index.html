@@ -25,10 +25,15 @@
             // Construir el deep link con TODOS los parámetros necesarios
             const deepLink = `caparazonemocional://reset-password#access_token=${accessToken}&refresh_token=${refreshToken}&type=${type}&expires_in=${expiresIn}`;
             
+            // URL alternativa para Android App Links
+            const androidLink = `https://catpirat.github.io/supabase-reset-redirect/android-handler?access_token=${encodeURIComponent(accessToken)}&refresh_token=${encodeURIComponent(refreshToken)}&type=${type}&expires_in=${expiresIn}`;
+            
             document.body.innerHTML = `
               <h2>Redirigiendo a la app...</h2>
-              <p>Si no se abre automáticamente, haz clic en:</p>
-              <p><a href="${deepLink}">Abrir CaparazónEmocional</a></p>
+              <p>Si no se abre automáticamente, prueba estos métodos:</p>
+              <p><button onclick="openApp()" style="background: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 5px; font-size: 16px; margin: 5px;">Método 1: Deep Link</button></p>
+              <p><button onclick="openAndroidLink()" style="background: #28a745; color: white; padding: 10px 20px; border: none; border-radius: 5px; font-size: 16px; margin: 5px;">Método 2: Android Link</button></p>
+              <p><a href="${deepLink}">Enlace directo</a></p>
               <br>
               <details>
                 <summary>Debug info</summary>
@@ -36,8 +41,20 @@
                 <p>Refresh Token: ${refreshToken ? "✓ Presente" : "✗ Faltante"}</p>
                 <p>Type: ${type}</p>
                 <p>Expires In: ${expiresIn}</p>
+                <p>Deep Link: ${deepLink}</p>
+                <p>Android Link: ${androidLink}</p>
               </details>
             `;
+            
+            // Función para abrir la app con deep link
+            window.openApp = function() {
+              window.location.href = deepLink;
+            };
+            
+            // Función para abrir con Android App Link
+            window.openAndroidLink = function() {
+              window.location.href = androidLink;
+            };
             
             // Intentar múltiples métodos de redirección
             setTimeout(() => {
