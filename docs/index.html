@@ -5,10 +5,13 @@
     <title>Procesando reset password...</title>
     <script>
       window.onload = () => {
-        // Extraemos todo lo que venga después del "#"
+        // Obtener parámetros de query (?...) y hash (#...)
+        const queryParams = new URLSearchParams(window.location.search);
         const hashParams = new URLSearchParams(window.location.hash.substring(1));
-        const accessToken = hashParams.get("access_token");
-        const type = hashParams.get("type");
+
+        // Revisar ambos lugares
+        const accessToken = queryParams.get("access_token") || hashParams.get("access_token") || queryParams.get("token") || hashParams.get("token");
+        const type = queryParams.get("type") || hashParams.get("type");
         const redirectTo = "caparazonemocional://reset-password";
 
         if (type === "recovery" && accessToken) {
@@ -16,7 +19,9 @@
           console.log("Redirigiendo a:", deepLink);
           window.location.href = deepLink;
         } else {
-          document.body.innerHTML = "<h2>Error: token inválido o falta parámetro</h2>";
+          document.body.innerHTML = "<h2>Error: token inválido o falta parámetro</h2><p>Params recibidos:<br>" 
+            + "Query: " + window.location.search + "<br>"
+            + "Hash: " + window.location.hash + "</p>";
         }
       };
     </script>
