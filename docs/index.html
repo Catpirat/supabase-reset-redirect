@@ -39,10 +39,24 @@
               </details>
             `;
             
-            // Intentar redirección automática
+            // Intentar múltiples métodos de redirección
             setTimeout(() => {
+              // Método 1: location.href
               window.location.href = deepLink;
-            }, 1000);
+            }, 500);
+            
+            setTimeout(() => {
+              // Método 2: location.assign
+              window.location.assign(deepLink);
+            }, 1500);
+            
+            setTimeout(() => {
+              // Método 3: crear un iframe oculto
+              const iframe = document.createElement('iframe');
+              iframe.style.display = 'none';
+              iframe.src = deepLink;
+              document.body.appendChild(iframe);
+            }, 2500);
             
           } else {
             document.body.innerHTML = `
